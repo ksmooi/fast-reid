@@ -16,7 +16,7 @@ import torch
 from onnxsim import simplify
 from torch.onnx import OperatorExportTypes
 
-sys.path.append('.')
+sys.path.append('../..')
 
 from fastreid.config import get_cfg
 from fastreid.modeling.meta_arch import build_model
@@ -114,14 +114,26 @@ def export_onnx_model(model, inputs):
     # Export the model to ONNX
     with torch.no_grad():
         with io.BytesIO() as f:
+            # original:
+            # torch.onnx.export(
+            #     model,
+            #     inputs,
+            #     f,
+            #     operator_export_type=OperatorExportTypes.ONNX_ATEN_FALLBACK,
+            #     # verbose=True,  # NOTE: uncomment this for debugging
+            #     # export_params=True,
+            # )
+            
+            # Use Dynamic Shapes in ONNX
             torch.onnx.export(
                 model,
                 inputs,
                 f,
                 operator_export_type=OperatorExportTypes.ONNX_ATEN_FALLBACK,
-                # verbose=True,  # NOTE: uncomment this for debugging
-                # export_params=True,
-            )
+                input_names=["input"],
+                output_names=["output"],
+                dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
+            )            
             onnx_model = onnx.load_from_string(f.getvalue())
 
     logger.info("Completed convert of ONNX model")
