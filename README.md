@@ -66,7 +66,7 @@ Fastreid is released under the [Apache 2.0 license](LICENSE).
 
 ## Citing FastReID
 
-If you use FastReID in your research or wish to refer to the baseline results published in the Model Zoo, please use the following BibTeX entry. test
+If you use FastReID in your research or wish to refer to the baseline results published in the Model Zoo, please use the following BibTeX entry.
 
 ```BibTeX
 @article{he2020fastreid,
